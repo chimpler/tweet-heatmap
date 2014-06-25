@@ -4,9 +4,6 @@ import twitter4j._
 import java.io._
 import java.util.Properties
 
-/**
- * Created by frederic on 6/13/14.
- */
 object FetchTweets extends App {
   if (args.length < 2) {
     sys.error("Arguments: <credential_file> <output_file> <keywords>")

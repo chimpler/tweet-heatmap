@@ -46,4 +46,34 @@ object Utils {
     } while (line != null)
     tweetGeos
   }
+
+  private def computeHeat(x: Int, y: Int, tweetGeos: mutable.Buffer[(Double, Double)], imageWidth:Int, imageHeight: Int): Double = {
+    var heat = 0.0d
+    val intensity = 1.0d
+    val maxDistance = imageWidth / 5
+    for (tweetGeo <- tweetGeos) {
+      // we compute the cartesian distance of 2 geo points
+      // this formula does not compute the real distance but a approximate distance
+      val (tweetX, tweetY) = Utils.toImageCoordinates(tweetGeo._1, tweetGeo._2, imageWidth, imageHeight)
+      //if the tweets are too far from the pixel, we can skip them to save some CPU
+      if (Math.abs(tweetX - x) < maxDistance && Math.abs(tweetY - y) < maxDistance) {
+        val distanceSquare = ((tweetX - x) * (tweetX - x)) + ((tweetY - y) * (tweetY - y))
+        if (distanceSquare == 0) {
+          heat += intensity
+        } else {
+          heat += intensity / distanceSquare
+        }
+      }
+    }
+    heat
+  }
+
+  def computeHeatMap(tweetGeos: mutable.Buffer[(Double, Double)], imageWidth:Int, imageHeight: Int) = {
+    val imageHeatMap = Array.ofDim[Double](imageWidth, imageHeight)
+    for(x <- 0 until imageWidth ; y<-0 until imageHeight) {
+      val heat = computeHeat(x, y, tweetGeos, imageWidth, imageHeight)
+      imageHeatMap(x)(y) = heat
+    }
+    imageHeatMap
+  }
 }

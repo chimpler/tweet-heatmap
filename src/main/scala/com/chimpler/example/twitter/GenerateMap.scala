@@ -27,11 +27,13 @@ object GenerateMap extends App {
   // draw map background
   val mapBackground = ImageIO.read(GenerateMap.getClass.getClassLoader.getResourceAsStream(backgroundImageFileName))
   graphics.drawImage(mapBackground, 0, 0, imageWidth, imageHeight, Color.WHITE, null)
+  graphics.setColor(new Color(0, 0, 0, 200))
+  graphics.fillRect(0, 0, imageWidth, imageHeight)
 
-  graphics.setColor(Color.GREEN)
+  graphics.setColor(new Color(0, 255, 0, 50))
   for (tweetGeo <- tweetGeos) {
     val (x, y) = Utils.toImageCoordinates(tweetGeo._1, tweetGeo._2, imageWidth, imageHeight)
-    graphics.fillRect(x, y, 1, 1)
+    graphics.fillOval(x - 1, y - 1, 2, 2)
   }
 
   ImageIO.write(image, "png", new File(outputImageFileName))
